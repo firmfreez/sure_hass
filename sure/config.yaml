@@ -1,0 +1,63 @@
+name: Sure
+description: Self-hosted personal finance app (Sure fork) for Home Assistant.
+slug: sure_finance
+version: "0.0.6"
+url: https://github.com/firmfreez/sure_hass
+init: false
+
+arch:
+  - amd64
+  - aarch64
+
+startup: application
+boot: auto
+
+ports:
+  3000/tcp: 1234
+
+map:
+  - data:rw
+
+# Чтобы UI открывался из аддона
+webui: "http://[HOST]:[PORT:3000]"
+
+schema:
+  postgres_user: str?
+  postgres_password: str
+  postgres_db: str?
+  secret_key_base: str
+
+  db_host: str?
+  db_port: port?
+
+  redis_url: str?
+
+  onboarding_state: list(open|closed|invite_only)?
+  self_hosted: bool?
+  rails_force_ssl: bool?
+  rails_assume_ssl: bool?
+
+  openai_access_token: str?
+  exchange_rate_provider: str?
+  securities_provider: str?
+
+options:
+  postgres_user: "sure_user"
+  postgres_password: "change_me"
+  postgres_db: "sure_production"
+  secret_key_base: "change_me_generate_openssl_rand_hex_64"
+
+  # Самый надежный вариант в HA — ходить к аддонам по hostname.
+  # Если используешь официальный PostgreSQL аддон — обычно так:
+  db_host: "a0d7b954-postgresql"
+  db_port: 5432
+
+  # Официальный Redis аддон обычно так:
+  redis_url: "redis://a0d7b954-redis:6379/1"
+
+  onboarding_state: "open"
+  self_hosted: true
+  rails_force_ssl: false
+  rails_assume_ssl: false
+
+image: "ghcr.io/firmfreez/{arch}-sure_finance_ha"
