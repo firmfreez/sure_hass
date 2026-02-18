@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
-FROM ghcr.io/we-promise/sure:stable
+ARG SURE_BASE_IMAGE=ghcr.io/firmfreez/sure:stable
+FROM ${SURE_BASE_IMAGE}
 
 USER root
 
@@ -13,7 +14,5 @@ RUN chmod +x /usr/local/bin/run.sh
 WORKDIR /rails
 EXPOSE 3000
 
-# ВАЖНО: ещё раз, прямо перед ENTRYPOINT
 USER root
-
 ENTRYPOINT ["/usr/local/bin/run.sh"]

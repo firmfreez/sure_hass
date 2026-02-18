@@ -12,6 +12,7 @@ permissions:
 
 env:
   IMAGE_BASENAME: sure_finance_ha
+  SURE_BASE_IMAGE: ghcr.io/firmfreez/sure:stable
 
 jobs:
   build:
@@ -54,6 +55,8 @@ jobs:
           context: ./sure
           file: ./sure/Dockerfile
           push: true
+          build-args: |
+            SURE_BASE_IMAGE=${{ env.SURE_BASE_IMAGE }}
           platforms: ${{ matrix.platform }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.arch }}-${{ env.IMAGE_BASENAME }}:${{ steps.ver.outputs.version }}
