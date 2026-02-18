@@ -1,7 +1,7 @@
 name: Sure
 description: Self-hosted personal finance app (Sure fork) for Home Assistant.
 slug: sure_finance
-version: "0.0.6"
+version: "0.1.0"
 url: https://github.com/firmfreez/sure_hass
 init: false
 

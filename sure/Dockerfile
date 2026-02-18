@@ -12,3 +12,8 @@ RUN chmod +x /usr/local/bin/run.sh
 
 WORKDIR /rails
 EXPOSE 3000
+
+# ВАЖНО: ещё раз, прямо перед ENTRYPOINT
+USER root
+
+ENTRYPOINT ["/usr/local/bin/run.sh"]

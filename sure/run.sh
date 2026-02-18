@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "[sure-addon] uid=$(id -u) gid=$(id -g)"
+ls -l /data /data/options.json || true
+
 CONFIG_PATH="/data/options.json"
 
 log() { echo "[sure-addon] $*"; }
