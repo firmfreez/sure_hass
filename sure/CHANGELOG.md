@@ -19,3 +19,5 @@
   - `rails_assume_ssl: false`
 - Reworked add-on description and README for Sure + Home Assistant.
 - Replaced add-on branding graphics with upstream Sure assets (`icon.png`, `logo.png`).
+- Normalized branding asset sizes for Home Assistant (`icon.png` 128x128, `logo.png` 250x100).
+- Simplified `onboarding_state` schema type to `str?` for safer config validation.

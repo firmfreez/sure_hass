@@ -36,7 +36,7 @@ schema:
 
   redis_url: str?
 
-  onboarding_state: list(open|closed|invite_only)?
+  onboarding_state: str?
   self_hosted: bool?
   rails_force_ssl: bool?
   rails_assume_ssl: bool?
