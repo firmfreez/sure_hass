@@ -44,7 +44,6 @@ jobs:
           fi
           [ -n "$VERSION" ] || { echo "Version is empty"; exit 1; }
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "sure_base_image=ghcr.io/firmfreez/sure:$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -59,6 +58,19 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve Sure base image
+        id: base
+        run: |
+          CANDIDATE="ghcr.io/firmfreez/sure:v${{ steps.ver.outputs.version }}"
+          FALLBACK="ghcr.io/firmfreez/sure:stable"
+          if docker manifest inspect "$CANDIDATE" >/dev/null 2>&1; then
+            BASE="$CANDIDATE"
+          else
+            BASE="$FALLBACK"
+          fi
+          echo "sure_base_image=$BASE" >> "$GITHUB_OUTPUT"
+          echo "Using SURE_BASE_IMAGE=$BASE"
+
       - name: Build & Push
         uses: docker/build-push-action@v6
         with:
@@ -66,7 +78,7 @@ jobs:
           file: ./sure/Dockerfile
           push: true
           build-args: |
-            SURE_BASE_IMAGE=${{ steps.ver.outputs.sure_base_image }}
+            SURE_BASE_IMAGE=${{ steps.base.outputs.sure_base_image }}
           platforms: ${{ matrix.platform }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.arch }}-${{ env.IMAGE_BASENAME }}:${{ steps.ver.outputs.version }}
