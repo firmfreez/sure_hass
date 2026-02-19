@@ -1,7 +1,7 @@
 name: Sure
-description: Self-hosted personal finance app (Sure fork) for Home Assistant.
+description: Sure: personal finance for everyone, packaged as a Home Assistant add-on with Ingress, PostgreSQL, Redis, and persistent storage.
 slug: sure_finance
-version: "0.6.9"
+version: "0.6.10"
 url: https://github.com/firmfreez/sure_hass
 init: false
 
@@ -11,14 +11,18 @@ arch:
 
 startup: application
 boot: auto
+ingress: true
+ingress_port: 3000
+panel_icon: mdi:cash-multiple
+panel_title: Sure
 
 ports:
-  3000/tcp: 1234
+  3000/tcp: 1212
 
 map:
   - data:rw
 
-# Чтобы UI открывался из аддона
+# Direct UI (без Ingress) остаётся доступным через Network порты аддона.
 webui: "http://[HOST]:[PORT:3000]"
 
 schema:
@@ -42,18 +46,15 @@ schema:
   securities_provider: str?
 
 options:
-  postgres_user: "sure_user"
-  postgres_password: "change_me"
-  postgres_db: "sure_production"
-  secret_key_base: "change_me_generate_openssl_rand_hex_64"
+  postgres_user: "postgres"
+  postgres_password: "homeassistant"
+  postgres_db: "postgres"
+  secret_key_base: "very_very_secret_key"
 
-  # Самый надежный вариант в HA — ходить к аддонам по hostname.
-  # Если используешь официальный PostgreSQL аддон — обычно так:
-  db_host: "a0d7b954-postgresql"
+  db_host: "db21ed7f-postgres-latest"
   db_port: 5432
 
-  # Официальный Redis аддон обычно так:
-  redis_url: "redis://a0d7b954-redis:6379/1"
+  redis_url: "redis://3b88f413-redis:6379"
 
   onboarding_state: "open"
   self_hosted: true
