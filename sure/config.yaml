@@ -1,7 +1,7 @@
 name: Sure
 description: "Sure: personal finance for everyone, packaged as a Home Assistant add-on with Ingress, PostgreSQL, Redis, and persistent storage."
 slug: sure_finance
-version: "0.6.16"
+version: "0.6.17"
 url: https://github.com/firmfreez/sure_hass
 init: false
 

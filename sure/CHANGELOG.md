@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.17
+
+- Bumped add-on version to `0.6.17`.
+
 ## 0.6.16
 
 - Added Ingress configuration (`ingress`, `ingress_port`).
