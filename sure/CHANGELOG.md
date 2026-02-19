@@ -1,10 +1,11 @@
 # Changelog
 
-## 0.6.10
+## 0.6.16
 
 - Added Ingress configuration (`ingress`, `ingress_port`).
 - Added sidebar panel configuration (`panel_icon`, `panel_title`).
 - Switched external port mapping to `1212`.
+- Enabled `HA_INGRESS_AUTO_LOGIN` by default (through `ha_ingress_auto_login: true`) for Home Assistant account auto-login.
 - Updated add-on defaults:
   - `postgres_user: postgres`
   - `postgres_password: homeassistant`

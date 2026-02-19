@@ -32,6 +32,7 @@ onboarding_state: open
 self_hosted: true
 rails_force_ssl: false
 rails_assume_ssl: false
+ha_ingress_auto_login: true
 ```
 
 ## Security Notes

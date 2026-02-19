@@ -44,6 +44,7 @@ REDIS_URL="$(json '.redis_url // "redis://redis:6379/1"')"
 SELF_HOSTED="$(to_bool_str "$(json '.self_hosted // true')")"
 RAILS_FORCE_SSL="$(to_bool_str "$(json '.rails_force_ssl // false')")"
 RAILS_ASSUME_SSL="$(to_bool_str "$(json '.rails_assume_ssl // false')")"
+HA_INGRESS_AUTO_LOGIN="$(to_bool_str "$(json '.ha_ingress_auto_login // true')")"
 ONBOARDING_STATE="$(json '.onboarding_state // "open"')"
 
 OPENAI_ACCESS_TOKEN="$(json '.openai_access_token // empty')"
@@ -57,7 +58,7 @@ esac
 
 export POSTGRES_USER POSTGRES_PASSWORD POSTGRES_DB SECRET_KEY_BASE
 export DB_HOST DB_PORT REDIS_URL
-export SELF_HOSTED RAILS_FORCE_SSL RAILS_ASSUME_SSL ONBOARDING_STATE
+export SELF_HOSTED RAILS_FORCE_SSL RAILS_ASSUME_SSL HA_INGRESS_AUTO_LOGIN ONBOARDING_STATE
 export RAILS_ENV=production RACK_ENV=production
 export PORT=3000
 

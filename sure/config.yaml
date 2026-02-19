@@ -1,7 +1,7 @@
 name: Sure
 description: "Sure: personal finance for everyone, packaged as a Home Assistant add-on with Ingress, PostgreSQL, Redis, and persistent storage."
 slug: sure_finance
-version: "0.6.10"
+version: "0.6.16"
 url: https://github.com/firmfreez/sure_hass
 init: false
 
@@ -40,6 +40,7 @@ schema:
   self_hosted: bool?
   rails_force_ssl: bool?
   rails_assume_ssl: bool?
+  ha_ingress_auto_login: bool?
 
   openai_access_token: str?
   exchange_rate_provider: str?
@@ -60,5 +61,6 @@ options:
   self_hosted: true
   rails_force_ssl: false
   rails_assume_ssl: false
+  ha_ingress_auto_login: true
 
 image: "ghcr.io/firmfreez/{arch}-sure_finance_ha"
