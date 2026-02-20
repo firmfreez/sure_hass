@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Sure/addon version (e.g. 0.6.16)"
-        required: true
+        description: "Sure/addon version (optional, e.g. 0.6.16)"
+        required: false
         type: string
   push:
     tags:
@@ -39,6 +39,9 @@ jobs:
         run: |
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             VERSION="${{ inputs.version }}"
+            if [ -z "$VERSION" ]; then
+              VERSION="$(awk -F'"' '/^version:/ {print $2; exit}' sure/config.yaml)"
+            fi
           else
             VERSION="${GITHUB_REF_NAME#v}"
           fi
@@ -61,13 +64,32 @@ jobs:
       - name: Resolve Sure base image
         id: base
         run: |
-          CANDIDATE="ghcr.io/firmfreez/sure:v${{ steps.ver.outputs.version }}"
+          INPUT_VERSION="${{ inputs.version }}"
           FALLBACK="ghcr.io/firmfreez/sure:stable"
-          if docker manifest inspect "$CANDIDATE" >/dev/null 2>&1; then
-            BASE="$CANDIDATE"
+
+          if [ -n "$INPUT_VERSION" ]; then
+            CANDIDATE="ghcr.io/firmfreez/sure:v${INPUT_VERSION}"
+            if docker manifest inspect "$CANDIDATE" >/dev/null 2>&1; then
+              BASE="$CANDIDATE"
+            else
+              BASE="$FALLBACK"
+            fi
           else
-            BASE="$FALLBACK"
+            TAG="$(curl -fsSL \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/orgs/firmfreez/packages/container/sure/versions?per_page=100" \
+              | jq -r '.[] | (.metadata.container.tags // [])[]' \
+              | grep -Ev '^(latest|stable|sha256-)' \
+              | head -n 1 || true)"
+
+            if [ -n "$TAG" ] && docker manifest inspect "ghcr.io/firmfreez/sure:${TAG}" >/dev/null 2>&1; then
+              BASE="ghcr.io/firmfreez/sure:${TAG}"
+            else
+              BASE="$FALLBACK"
+            fi
           fi
+
           echo "sure_base_image=$BASE" >> "$GITHUB_OUTPUT"
           echo "Using SURE_BASE_IMAGE=$BASE"
 
