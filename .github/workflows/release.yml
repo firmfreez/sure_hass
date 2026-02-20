@@ -75,16 +75,9 @@ jobs:
               BASE="$FALLBACK"
             fi
           else
-            TAG="$(curl -fsSL \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/orgs/firmfreez/packages/container/sure/versions?per_page=100" \
-              | jq -r '.[] | (.metadata.container.tags // [])[]' \
-              | grep -Ev '^(latest|stable|sha256-)' \
-              | head -n 1 || true)"
-
-            if [ -n "$TAG" ] && docker manifest inspect "ghcr.io/firmfreez/sure:${TAG}" >/dev/null 2>&1; then
-              BASE="ghcr.io/firmfreez/sure:${TAG}"
+            CANDIDATE="ghcr.io/firmfreez/sure:nightly"
+            if docker manifest inspect "$CANDIDATE" >/dev/null 2>&1; then
+              BASE="$CANDIDATE"
             else
               BASE="$FALLBACK"
             fi
