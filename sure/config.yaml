@@ -1,0 +1,66 @@
+name: Sure
+description: "Sure: personal finance for everyone, packaged as a Home Assistant add-on with Ingress, PostgreSQL, Redis, and persistent storage."
+slug: sure_finance
+version: "0.6.8-alpha.13-ha"
+url: https://github.com/firmfreez/sure_hass
+init: false
+
+arch:
+  - amd64
+  - aarch64
+
+startup: application
+boot: auto
+ingress: true
+ingress_port: 3000
+panel_icon: mdi:cash-multiple
+panel_title: "Финансы"
+
+ports:
+  3000/tcp: 1212
+
+map:
+  - data:rw
+
+# Direct UI (без Ingress) остаётся доступным через Network порты аддона.
+webui: "http://[HOST]:[PORT:3000]"
+
+schema:
+  postgres_user: str?
+  postgres_password: str
+  postgres_db: str?
+  secret_key_base: str
+
+  db_host: str?
+  db_port: port?
+
+  redis_url: str?
+
+  onboarding_state: str?
+  self_hosted: bool?
+  rails_force_ssl: bool?
+  rails_assume_ssl: bool?
+  ha_ingress_auto_login: bool?
+
+  openai_access_token: str?
+  exchange_rate_provider: str?
+  securities_provider: str?
+
+options:
+  postgres_user: "postgres"
+  postgres_password: "homeassistant"
+  postgres_db: "postgres"
+  secret_key_base: "very_very_secret_key"
+
+  db_host: "db21ed7f-postgres-latest"
+  db_port: 5432
+
+  redis_url: "redis://3b88f413-redis:6379"
+
+  onboarding_state: "open"
+  self_hosted: true
+  rails_force_ssl: false
+  rails_assume_ssl: false
+  ha_ingress_auto_login: true
+
+image: "ghcr.io/firmfreez/{arch}-sure_finance_ha"
