@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.8-alpha.13-ha
+## 0.6.8-alpha.13-ha-1
 
 - Rebased README on upstream Sure with explicit Home Assistant add-on positioning.
 - Added notes about HA auto-login, Russian language support, and bug fixes.
