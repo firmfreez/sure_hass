@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.5-alpha.7-ha-3
+
+- Update the Sure base image to `0.7.5-alpha.7-ha-2` for amd64 and aarch64.
+- Replace the unavailable `stable` base image tag with an explicit version in the Dockerfile and release workflow.
+
 ## 0.7.5-alpha.7-ha-2
 
 - Update upstream

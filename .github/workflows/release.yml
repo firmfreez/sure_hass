@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Sure base image tag (optional, e.g. sha-...); empty => stable"
+        description: "Sure base image tag (optional, e.g. sha-...); empty => 0.7.5-alpha.7-ha-2"
         required: false
         type: string
   push:
@@ -67,7 +67,7 @@ jobs:
         id: base
         run: |
           INPUT_TAG="${{ inputs.version }}"
-          DEFAULT_BASE="ghcr.io/firmfreez/sure:stable"
+          DEFAULT_BASE="ghcr.io/firmfreez/sure:0.7.5-alpha.7-ha-2"
 
           if [ -n "$INPUT_TAG" ]; then
             CANDIDATE="ghcr.io/firmfreez/sure:${INPUT_TAG}"
