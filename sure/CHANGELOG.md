@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.5-alpha.7-ha-2
+
+- Update upstream
+
+## 0.7.5-alpha.7-ha-1
+
+- Update upstream
+
 ## 0.6.8-alpha.13-ha-7
 
 - Rebased README on upstream Sure with explicit Home Assistant add-on positioning.
