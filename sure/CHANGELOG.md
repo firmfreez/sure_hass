@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.5.5
+
+- Keep the Sure base image at `0.7.5-alpha.7-ha-4`; the add-on version is tracked separately from the upstream version.
+
 ## 0.7.5.4
 
 - Switch the add-on version to a numeric format so Home Assistant correctly detects the update and enables the Update button.
