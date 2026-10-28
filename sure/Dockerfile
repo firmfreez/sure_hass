@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG SURE_BASE_IMAGE=ghcr.io/firmfreez/sure:0.7.5-alpha.7-ha-4
+ARG SURE_BASE_IMAGE=ghcr.io/firmfreez/sure:0.7.6-alpha.10-ha-1
 FROM ${SURE_BASE_IMAGE}
 
 USER root
