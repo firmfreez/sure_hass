@@ -36,6 +36,19 @@ Quick start:
 3. Start the add-on.
 4. Open it from the Home Assistant sidebar (Ingress).
 
+## Update to 0.7.6.1
+
+This add-on uses `ghcr.io/firmfreez/sure:0.7.6-alpha.10-ha-2` on amd64 and aarch64.
+The numeric add-on version is separate from the Sure base image version so Home
+Assistant can detect the update.
+
+The update includes new upstream database migrations. Back up the PostgreSQL
+database and add-on data before updating; the existing startup script runs
+`db:prepare` when the add-on starts. Existing options, PostgreSQL connections and
+the persistent `/data/storage` location remain supported. See the
+[HA compatibility report](https://github.com/firmfreez/sure/blob/v0.7.6-alpha.10-ha-2/docs/hosting/ha-upstream-20261028.md)
+for the reviewed migrations and upgrade checks.
+
 ## Default add-on options
 
 ```yaml

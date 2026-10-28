@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Sure base image tag (optional, e.g. sha-...); empty => 0.7.5-alpha.7-ha-4"
+        description: "Sure base image tag override (optional; defaults to sure/Dockerfile)"
         required: false
         type: string
   push:
@@ -21,6 +21,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -37,17 +38,21 @@ jobs:
       - name: Version from tag
         id: ver
         run: |
+          set -euo pipefail
+          CONFIG_VERSION="$(awk -F'"' '/^version:/ {print $2; exit}' sure/config.yaml)"
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            INPUT_VALUE="${{ inputs.version }}"
-            if echo "$INPUT_VALUE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-              VERSION="$INPUT_VALUE"
-            else
-              VERSION="$(awk -F'"' '/^version:/ {print $2; exit}' sure/config.yaml)"
-            fi
+            VERSION="$CONFIG_VERSION"
           else
             VERSION="${GITHUB_REF_NAME#v}"
+            if [ "$VERSION" != "$CONFIG_VERSION" ]; then
+              echo "Release tag must match sure/config.yaml: $CONFIG_VERSION"
+              exit 1
+            fi
           fi
-          [ -n "$VERSION" ] || { echo "Version is empty"; exit 1; }
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+(\.[0-9]+){2,3}$'; then
+            echo "Add-on version must contain three or four numeric components"
+            exit 1
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
@@ -65,22 +70,39 @@ jobs:
 
       - name: Resolve Sure base image
         id: base
+        timeout-minutes: 35
+        env:
+          INPUT_TAG: ${{ inputs.version }}
         run: |
-          INPUT_TAG="${{ inputs.version }}"
-          DEFAULT_BASE="ghcr.io/firmfreez/sure:0.7.5-alpha.7-ha-4"
+          set -euo pipefail
+          DEFAULT_BASE="$(sed -n 's/^ARG SURE_BASE_IMAGE=//p' sure/Dockerfile)"
+          [ -n "$DEFAULT_BASE" ] || { echo "Sure base image is missing from sure/Dockerfile"; exit 1; }
 
           if [ -n "$INPUT_TAG" ]; then
-            CANDIDATE="ghcr.io/firmfreez/sure:${INPUT_TAG}"
-            if docker manifest inspect "$CANDIDATE" >/dev/null 2>&1; then
-              BASE="$CANDIDATE"
-            else
-              echo "Requested Sure tag not found: $INPUT_TAG"
+            if ! echo "$INPUT_TAG" | grep -Eq '^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$'; then
+              echo "Invalid Sure base image tag"
               exit 1
             fi
+            BASE="ghcr.io/firmfreez/sure:${INPUT_TAG}"
           else
             BASE="$DEFAULT_BASE"
           fi
 
+          if [ -n "$INPUT_TAG" ]; then
+            docker manifest inspect "$BASE" >/dev/null
+          else
+            for attempt in $(seq 1 60); do
+              if docker manifest inspect "$BASE" >/dev/null 2>&1; then
+                break
+              fi
+              if [ "$attempt" -eq 60 ]; then
+                echo "Sure base image was not published in time: $BASE"
+                exit 1
+              fi
+              echo "Waiting for Sure base image: $BASE (attempt $attempt/60)"
+              sleep 30
+            done
+          fi
           echo "sure_base_image=$BASE" >> "$GITHUB_OUTPUT"
           echo "Using SURE_BASE_IMAGE=$BASE"
 
@@ -99,3 +121,5 @@ jobs:
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.version=${{ steps.ver.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.base.name=${{ steps.base.outputs.sure_base_image }}

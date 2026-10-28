@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.6.1
+
+- Update the Sure base image to `0.7.6-alpha.10-ha-2`.
+- Open new transfers with an empty source amount instead of a prefilled zero.
+- Keep the amount and transaction name when switching between expense, income and transfer forms.
+- Move the previous source to an empty destination, and swap accounts when choosing the destination as the new source.
+- Release builds wait for the versioned Sure base image to finish publishing.
+
+## 0.7.6.0
+
+- Update the Sure base image to `0.7.6-alpha.10-ha-1` for amd64 and aarch64.
+- Include the upstream update while preserving HA ingress, auto-login, account balance updates, category hierarchy and loan-payment preferences.
+- Improve category search and keyboard selection, expand long category lists, and leave new amount fields empty.
+- Add dated shortcuts in account activity, remember the last entered date, and add a Today button to new operation forms.
+- Resolve the default base image from the Dockerfile and verify that release tags match the add-on version.
+
 ## 0.7.5.5
 
 - Keep the Sure base image at `0.7.5-alpha.7-ha-4`; the add-on version is tracked separately from the upstream version.
